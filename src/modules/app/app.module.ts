@@ -5,6 +5,7 @@ import {HealthModule} from "../health/health.module.js";
 import {ConfigModule} from "@nestjs/config";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {buildTypeOrmOptions} from "../../database/typeorm-options.js";
+import {UsersModule} from "../users/users.module.js";
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import {buildTypeOrmOptions} from "../../database/typeorm-options.js";
       entities: [],
       migrations: []
     }),
+    UsersModule,
     HealthModule,
   ],
   controllers: [AppController],
