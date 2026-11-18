@@ -6,6 +6,7 @@ import {ConfigModule} from "@nestjs/config";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {buildTypeOrmOptions} from "../../database/typeorm-options.js";
 import {UsersModule} from "../users/users.module.js";
+import {AuthModule} from "../auth/auth.module.js";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import {UsersModule} from "../users/users.module.js";
       migrations: []
     }),
     UsersModule,
+    AuthModule,
     HealthModule,
   ],
   controllers: [AppController],
