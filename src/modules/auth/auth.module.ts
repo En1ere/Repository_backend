@@ -2,26 +2,16 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from '../users/entities/user.entity.js';
-import { AccessTokenGuard } from './access-token.guard.js';
+import { UsersModule } from '../users/users.module.js';
 import { AuthController } from './auth.controller.js';
-import { AuthRepository } from './auth.repository.js';
 import { AuthService } from './auth.service.js';
-import { AuthCredentialsEntity } from './entities/authCredentials.entity.js';
-import { PasswordRecoverySecretEntity } from './entities/password-recovery-secret.entity.js';
-import { PasswordRecoverySessionEntity } from './entities/password-recovery-session.entity.js';
 import { SessionEntity } from './entities/session.entity.js';
 import { SessionsRepository } from './sessions.repository.js';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([
-            UserEntity,
-            AuthCredentialsEntity,
-            PasswordRecoverySecretEntity,
-            PasswordRecoverySessionEntity,
-            SessionEntity,
-        ]),
+        UsersModule,
+        TypeOrmModule.forFeature([SessionEntity]),
         JwtModule.registerAsync({
             inject: [ConfigService],
             useFactory: (config: ConfigService) => ({
@@ -37,12 +27,6 @@ import { SessionsRepository } from './sessions.repository.js';
         }),
     ],
     controllers: [AuthController],
-    providers: [
-        AccessTokenGuard,
-        AuthRepository,
-        SessionsRepository,
-        AuthService,
-    ],
-    exports: [AccessTokenGuard],
+    providers: [SessionsRepository, AuthService],
 })
 export class AuthModule {}

@@ -6,7 +6,6 @@ import {
     PrimaryColumn,
     Unique,
     UpdateDateColumn,
-    VersionColumn,
 } from 'typeorm';
 
 export const USER_STATUSES = ['active', 'locked', 'deletionPending'] as const;
@@ -24,7 +23,6 @@ export type UserStatus = (typeof USER_STATUSES)[number];
     'CHK_user_status',
     `"status" IN ('active','locked','deletionPending')`,
 )
-@Check('CHK_user_version', `"version" > 0`)
 export class UserEntity {
     @PrimaryColumn('uuid')
     id!: string;
@@ -40,7 +38,4 @@ export class UserEntity {
 
     @UpdateDateColumn({ type: 'timestamptz', default: () => 'now()' })
     updatedAt!: Date;
-
-    @VersionColumn({ type: 'integer', default: 1 })
-    version!: number;
 }

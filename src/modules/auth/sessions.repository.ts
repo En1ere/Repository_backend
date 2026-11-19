@@ -24,10 +24,7 @@ export class SessionsRepository {
             id: input.id,
             userId: input.userId,
             sessionHash: input.sessionHash,
-            deviceLabel: null,
-            idleExpiresAt: input.expiresAt,
-            absoluteExpiresAt: input.expiresAt,
-            lastActivityAt: new Date(),
+            expiresAt: input.expiresAt,
             revokedAt: null,
         });
     }
@@ -50,8 +47,7 @@ export class SessionsRepository {
             if (
                 !session ||
                 session.revokedAt ||
-                session.idleExpiresAt <= now ||
-                session.absoluteExpiresAt <= now ||
+                session.expiresAt <= now ||
                 !this.hashesEqual(session.sessionHash, currentHash)
             ) {
                 return null;
@@ -63,7 +59,6 @@ export class SessionsRepository {
             if (!user || user.status !== 'active') return null;
 
             session.sessionHash = nextHash;
-            session.lastActivityAt = now;
             await sessions.save(session);
 
             return {

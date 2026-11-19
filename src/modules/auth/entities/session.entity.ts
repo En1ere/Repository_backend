@@ -1,5 +1,4 @@
 import {
-    Check,
     Column,
     CreateDateColumn,
     Entity,
@@ -11,10 +10,7 @@ import {
 import { UserEntity } from '../../users/entities/user.entity.js';
 
 @Entity('Session')
-@Index('session_active_user_idx', ['userId', 'lastActivityAt'], {
-    where: '"revokedAt" IS NULL',
-})
-@Check('CHK_session_expiry', `"idleExpiresAt" <= "absoluteExpiresAt"`)
+@Index('session_user_idx', ['userId'])
 export class SessionEntity {
     @PrimaryColumn('uuid')
     id!: string;
@@ -26,21 +22,11 @@ export class SessionEntity {
     @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
     user!: UserEntity;
 
-    /** Hash of the opaque refresh-token secret. */
     @Column({ type: 'text', select: false, unique: true })
     sessionHash!: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true })
-    deviceLabel!: string | null;
-
     @Column({ type: 'timestamptz' })
-    idleExpiresAt!: Date;
-
-    @Column({ type: 'timestamptz' })
-    absoluteExpiresAt!: Date;
-
-    @Column({ type: 'timestamptz', default: () => 'now()' })
-    lastActivityAt!: Date;
+    expiresAt!: Date;
 
     @Column({ type: 'timestamptz', nullable: true })
     revokedAt!: Date | null;
