@@ -10,10 +10,6 @@ export class UsersRepository {
         private readonly repository: Repository<UserEntity>
     ) {}
 
-    create(email: string, passwordHash: string) {
-        return this.repository.create({ email, passwordHash });
-    }
-
     save(user: UserEntity) {
         return this.repository.save(user);
     }
@@ -22,33 +18,11 @@ export class UsersRepository {
         return this.repository.findOneBy({ id });
     }
 
-    findByLoginForAuth(email: string) {
+    findByLoginForAuth(login: string) {
         return this.repository
             .createQueryBuilder('user')
             .addSelect('user.passwordHash')
-            .where('user.email = :email', { email })
+            .where('user.login = :login', { login })
             .getOne();
-    }
-
-    findByRefreshTokenHash(tokenHash: string) {
-        return this.repository
-            .createQueryBuilder('user')
-            .addSelect([
-                'user.refreshTokenHash',
-                'user.refreshTokenExpiresAt',
-            ])
-            .where('user.refreshTokenHash = :tokenHash', { tokenHash })
-            .getOne();
-    }
-
-    setRefreshToken(
-        userId: string,
-        tokenHash: string | null,
-        expiresAt: Date | null,
-    ) {
-        return this.repository.update(userId, {
-            refreshTokenHash: tokenHash,
-            refreshTokenExpiresAt: expiresAt,
-        });
     }
 }

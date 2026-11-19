@@ -1,36 +1,37 @@
-import {Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn} from "typeorm";
-import {UserRole} from "./user-role.enum.js";
+import {Check, Column, CreateDateColumn, Entity, PrimaryColumn, Unique} from "typeorm";
 
-@Entity({ name: 'users'})
-@Index('uq_users_login', ['login'], { unique: true })
-@Index('uq_users_refresh_token_hash', ['refreshTokenHash'], {
-    unique: true,
-    where: '"refreshTokenHash" IS NOT NULL',
-})
+export const USER_STATUSES = [
+    'active',
+    'locked',
+    'deletionPending'
+] as const;
+
+export type UserStatus = (typeof USER_STATUSES)[number];
+
+@Entity({ name: 'User', schema: 'public' })
+@Unique('user_login_unique', ['login'])
+@Check('CHK_user_login_normalized', `"login" = lower(btrim("login"))`)
+@Check(
+'CHK_user_login_format',
+`"login" ~ '^[a-z0-9][a-z0-9._-]{2,63}$'`,
+)
+@Check(
+    'CHK_user_status',
+    `"status" IN ('active','locked','deletionPending')`,
+)
 export class UserEntity {
-    @PrimaryGeneratedColumn('uuid')
-    id: string
+    @PrimaryColumn('uuid')
+    id!: string;
 
-    @Column({type: 'varchar', length: 320})
-    login: string
+    @Column({type: 'varchar', length: 64})
+    login!: string;
 
-    @Column({type: 'varchar', length: 255, select: false})
-    passwordHash: string
+    @Column({type: 'varchar', length: 32, default: 'active'})
+    status!: UserStatus;
 
-    @Column({type: "varchar", length: 64, nullable: true, select: false})
-    refreshTokenHash: string|null
+    @CreateDateColumn({ type: "timestamptz", default: () => 'now()' })
+    createdAt!: Date;
 
-    @Column({type: 'timestamptz', nullable: true, select: false})
-    refreshTokenExpiresAt: Date|null
-
-    @Column({
-        type: "enum",
-        enum: UserRole,
-        enumName: 'user_role',
-        default: UserRole.USER,
-    })
-    role: UserRole
-
-    @CreateDateColumn({type: "timestamptz"})
-    createdAt: Date
+    @CreateDateColumn({ type: "timestamptz", default: () => 'now()' })
+    updatedAt!: Date;
 }
