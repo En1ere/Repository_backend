@@ -8,8 +8,4 @@ export class UsersService {
     findById(id: string) {
         return this.usersRepository.findById(id);
     }
-
-    findForAuth(login: string) {
-        return this.usersRepository.findByLoginForAuth(login);
-    }
 }

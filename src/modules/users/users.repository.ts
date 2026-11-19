@@ -18,11 +18,4 @@ export class UsersRepository {
         return this.repository.findOneBy({ id });
     }
 
-    findByLoginForAuth(login: string) {
-        return this.repository
-            .createQueryBuilder('user')
-            .addSelect('user.passwordHash')
-            .where('user.login = :login', { login })
-            .getOne();
-    }
 }

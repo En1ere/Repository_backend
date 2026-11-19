@@ -1,39 +1,50 @@
-import {Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn} from "typeorm";
-import {UserEntity} from "../../users/entities/user.entity.js";
+import {
+    Check,
+    Column,
+    CreateDateColumn,
+    Entity,
+    Index,
+    JoinColumn,
+    ManyToOne,
+    PrimaryColumn,
+} from 'typeorm';
+import { UserEntity } from '../../users/entities/user.entity.js';
 
 @Entity('Session')
+@Index('session_active_user_idx', ['userId', 'lastActivityAt'], {
+    where: '"revokedAt" IS NULL',
+})
+@Check('CHK_session_expiry', `"idleExpiresAt" <= "absoluteExpiresAt"`)
 export class SessionEntity {
     @PrimaryColumn('uuid')
-    id: string
+    id!: string;
 
-    @OneToOne(() => UserEntity, {onDelete: 'CASCADE'})
-    @JoinColumn({name: 'userId', referencedColumnName: 'id'})
-    userId!: UserEntity;
+    @Column({ type: 'uuid' })
+    userId!: string;
 
-    @Column({type: 'text', select: false})
+    @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
+    @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+    user!: UserEntity;
+
+    /** Hash of the opaque refresh-token secret. */
+    @Column({ type: 'text', select: false, unique: true })
     sessionHash!: string;
 
-    @Column({type: 'text', select: false})
-    csrfSecretHash!: string;
+    @Column({ type: 'varchar', length: 255, nullable: true })
+    deviceLabel!: string | null;
 
-    @Column({type: 'varchar', length: 255, nullable: true})
-    deviceLabel!: string| null;
-
-    @CreateDateColumn({ type: "timestamptz", nullable: true })
-    trustedUntil!: Date|null;
-
-    @CreateDateColumn({ type: "timestamptz" })
+    @Column({ type: 'timestamptz' })
     idleExpiresAt!: Date;
 
-    @CreateDateColumn({ type: "timestamptz" })
+    @Column({ type: 'timestamptz' })
     absoluteExpiresAt!: Date;
 
-    @CreateDateColumn({ type: "timestamptz", default: () => 'now()' })
+    @Column({ type: 'timestamptz', default: () => 'now()' })
     lastActivityAt!: Date;
 
-    @CreateDateColumn({ type: "timestamptz", nullable: true })
-    revokedAt!: Date|null;
+    @Column({ type: 'timestamptz', nullable: true })
+    revokedAt!: Date | null;
 
-    @CreateDateColumn({ type: "timestamptz", default: () => 'now()' })
+    @CreateDateColumn({ type: 'timestamptz', default: () => 'now()' })
     createdAt!: Date;
 }
