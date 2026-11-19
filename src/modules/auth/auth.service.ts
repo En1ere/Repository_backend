@@ -23,8 +23,7 @@ type RefreshTokenParts = {
     secret: string;
 };
 
-const UUID_PATTERN =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 @Injectable()
 export class AuthService {
@@ -42,7 +41,7 @@ export class AuthService {
         });
         const user = await this.usersService.create(login, passwordHash);
 
-        return this.toPublicUser(user);
+        return this.usersService.toPublicUser(user);
     }
 
     async login(input: LoginInput) {
@@ -114,7 +113,7 @@ export class AuthService {
         refreshSecret: string,
     ) {
         return {
-            user: this.toPublicUser(user),
+            user: this.usersService.toPublicUser(user),
             accessToken: await this.jwtService.signAsync({
                 sub: user.id,
                 sid: sessionId,
@@ -142,14 +141,5 @@ export class AuthService {
 
     private hashToken(token: string) {
         return createHash('sha256').update(token).digest('hex');
-    }
-
-    private toPublicUser(user: UserEntity) {
-        return {
-            id: user.id,
-            login: user.login,
-            status: user.status,
-            createdAt: user.createdAt.toISOString(),
-        };
     }
 }
