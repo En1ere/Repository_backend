@@ -22,8 +22,8 @@
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
     "db:schema:log": "typeorm-ts-node-esm schema:log -d src/database/data-source.ts",
     "db:schema:sync:local": "node --env-file=.env -e \"const hosts = ['localhost', '127.0.0.1', '::1']; if (!hosts.includes(process.env.DB_HOST ?? '')) { console.error('DB_HOST must point to the local computer'); process.exit(1); }\" && typeorm-ts-node-esm schema:sync -d src/database/data-source.ts",
-    "db:data:generate": "ts-node-esm src/database/data/generate.ts",
-    "db:data:apply": "ts-node-esm src/database/data/apply.ts",
+    "db:data:generate": "tsx src/database/data/generate.ts",
+    "db:data:apply": "tsx src/database/data/apply.ts",
     "migration:generate": "typeorm-ts-node-esm migration:generate src/database/migrations/Schema -d src/database/data-source.ts",
     "migration:show": "typeorm-ts-node-esm migration:show -d src/database/data-source.ts",
     "migration:run": "typeorm-ts-node-esm migration:run -d src/database/data-source.ts",
@@ -59,6 +59,7 @@
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-node": "^10.9.2",
+    "tsx": "4.23.15",
     "typescript": "^6.0.2",
     "vite": "^8.0.0",
     "vitest": "^4.1.2"

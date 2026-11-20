@@ -61,16 +61,17 @@ const UUID_PATTERN =
 const LOGIN_PATTERN = /^[a-z0-9][a-z0-9._-]{2,63}$/;
 
 export function parseDatabaseData(value: unknown): DatabaseData {
-    if (!isRecord(value) || value.version !== DATABASE_DATA_VERSION) {
+    const root = requiredRecord(value, 'database data');
+    if (root.version !== DATABASE_DATA_VERSION) {
         throw new Error(`Database data version must be ${DATABASE_DATA_VERSION}`);
     }
 
-    const users = requiredArray(value.users, 'users').map(parseUser);
+    const users = requiredArray(root.users, 'users').map(parseUser);
     const userIds = uniqueValues(users.map((user) => user.id), 'user id');
     uniqueValues(users.map((user) => user.login), 'user login');
 
     const authCredentials = requiredArray(
-        value.authCredentials,
+        root.authCredentials,
         'authCredentials',
     ).map((item, index) => parseAuthCredentials(item, index, userIds));
     uniqueValues(
@@ -78,14 +79,14 @@ export function parseDatabaseData(value: unknown): DatabaseData {
         'credentials userId',
     );
 
-    const sessions = requiredArray(value.sessions, 'sessions').map(
+    const sessions = requiredArray(root.sessions, 'sessions').map(
         (item, index) => parseSession(item, index, userIds),
     );
     uniqueValues(sessions.map((item) => item.id), 'session id');
     uniqueValues(sessions.map((item) => item.sessionHash), 'session hash');
 
     const passwordRecoverySecrets = requiredArray(
-        value.passwordRecoverySecrets,
+        root.passwordRecoverySecrets,
         'passwordRecoverySecrets',
     ).map((item, index) => parseRecoverySecret(item, index, userIds));
     uniqueValues(
@@ -94,7 +95,7 @@ export function parseDatabaseData(value: unknown): DatabaseData {
     );
 
     const passwordRecoverySessions = requiredArray(
-        value.passwordRecoverySessions,
+        root.passwordRecoverySessions,
         'passwordRecoverySessions',
     ).map((item, index) => parseRecoverySession(item, index, userIds));
     uniqueValues(
