@@ -6,8 +6,13 @@ import {PublicUser} from "../auth/types/index.js";
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    @Get('users:id')
+    @Get(':id')
     async getMe(@Param('id') id: string): Promise<PublicUser|null> {
         return await this.usersService.getPublicUserById(id);
+    }
+
+    @Get()
+    async getAllUsers(): Promise<PublicUser[]|null> {
+        return await this.usersService.getAllPublicUsers();
     }
 }

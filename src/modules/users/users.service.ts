@@ -27,6 +27,10 @@ export class UsersService {
         return this.usersRepository.findById(id);
     }
 
+    getAllUsers() {
+        return this.usersRepository.getAllUsers();
+    }
+
     findByLogin(login: string) {
         return this.usersRepository.findByLogin(login);
     }
@@ -53,6 +57,16 @@ export class UsersService {
         }
 
         return this.toPublicUser(user);
+    }
+
+    async getAllPublicUsers() {
+        const users = await this.getAllUsers();
+
+        if(users.length < 1) {
+            throw new NotFoundException({code: 'USER_NOT_FOUND'})
+        }
+
+        return users.map(user => this.toPublicUser(user));
     }
 
     private loginAlreadyUsed() {

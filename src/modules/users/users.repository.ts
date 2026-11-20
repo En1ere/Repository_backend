@@ -38,6 +38,10 @@ export class UsersRepository {
         return this.repository.findOneBy({ login });
     }
 
+    getAllUsers() {
+        return this.repository.find()
+    }
+
     async findForAuth(login: string): Promise<UserForAuth | null> {
         const credentials = await this.dataSource
             .getRepository(AuthCredentialsEntity)
