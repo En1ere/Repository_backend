@@ -63,7 +63,7 @@ export class UsersService {
         const users = await this.getAllUsers();
 
         if(users.length < 1) {
-            throw new NotFoundException({code: 'USER_NOT_FOUND'})
+            throw new NotFoundException({code: 'USERS_NOT_FOUND'})
         }
 
         return users.map(user => this.toPublicUser(user));
