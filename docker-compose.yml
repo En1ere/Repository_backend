@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:17
-    container_name: nest-postgres
+    container_name: nest-rep-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
@@ -10,12 +10,17 @@ services:
     ports:
       - "127.0.0.1:5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - nest_rep:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d nest_auth"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U postgres -d nest_rep",
+        ]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  postgres_data:
+  repository_backend_postgres_data:
+    name: nest_rep
