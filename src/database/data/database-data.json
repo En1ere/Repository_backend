@@ -1,8 +1,41 @@
 {
   "version": 2,
-  "users": [],
-  "authCredentials": [],
-  "sessions": [],
+  "users": [
+    {
+      "id": "0e1469be-b955-4132-84e8-844e08754969",
+      "login": "sas",
+      "status": "active",
+      "createdAt": "2026-11-20T05:41:09.053Z",
+      "updatedAt": "2026-11-20T05:41:09.053Z"
+    },
+    {
+      "id": "9fd8f683-a51e-43c6-adf1-db8bc372e005",
+      "login": "sus",
+      "status": "active",
+      "createdAt": "2026-11-20T05:41:33.370Z",
+      "updatedAt": "2026-11-20T05:41:33.370Z"
+    }
+  ],
+  "authCredentials": [
+    {
+      "userId": "0e1469be-b955-4132-84e8-844e08754969",
+      "passwordHash": "$argon2id$v=19$m=65536,t=3,p=4$OrbdKC0ml+jKc3QY4NNGww$z2WgjNglNVOYW5pnjVp7PfRTAsY3y82khF8ImKhUB6g"
+    },
+    {
+      "userId": "9fd8f683-a51e-43c6-adf1-db8bc372e005",
+      "passwordHash": "$argon2id$v=19$m=65536,t=3,p=4$145KCDR7Yx+bUc+yma3dAA$Q6rkuZ11hvJX3VPylNxmK81dpozTFWsGDAr4Y2W9OYo"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "9d4e4c0d-3984-4c12-a3e5-fe202b24398a",
+      "userId": "0e1469be-b955-4132-84e8-844e08754969",
+      "sessionHash": "ce5e0090f73c08ae4fbcb8f58a62c817c88ffb32934b960441dc9963c78ac353",
+      "expiresAt": "2026-12-20T05:42:49.831Z",
+      "revokedAt": null,
+      "createdAt": "2026-11-20T05:42:49.833Z"
+    }
+  ],
   "passwordRecoverySecrets": [],
   "passwordRecoverySessions": []
 }
