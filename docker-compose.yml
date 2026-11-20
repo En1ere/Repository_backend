@@ -12,15 +12,11 @@ services:
     volumes:
       - nest_rep:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U postgres -d nest_rep",
-        ]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nest_rep"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
-  repository_backend_postgres_data:
+  nest_rep:
     name: nest_rep
